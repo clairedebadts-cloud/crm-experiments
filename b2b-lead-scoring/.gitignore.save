@@ -1,0 +1,47 @@
+# Data files
+data/*.csv
+data/*.xlsx
+data/*.zip
+!data/.gitkeep
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+# Data files (too large for GitHub)
+data/*.csv
+data/*.xlsx
+
+# Model files (too large for GitHub)
+models/*.pkl
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Temporary files
+*.log
+*.tmp# Data files (too large for GitHub)
+data/*.cs

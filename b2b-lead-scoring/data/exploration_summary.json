@@ -1,0 +1,21 @@
+{
+  "total_leads": 9240,
+  "conversion_rate": 38.53896103896104,
+  "form_completion_impact": {
+    "complete_forms_conversion": 68.4,
+    "incomplete_forms_conversion": 10.6,
+    "multiplier": 6.452830188679246
+  },
+  "high_value_features": [
+    "form_completion_score",
+    "TotalVisits",
+    "Total Time Spent on Website",
+    "Page Views Per Visit",
+    "action_status",
+    "Lead Source",
+    "has_sales_contact"
+  ],
+  "leads_to_exclude": {
+    "already_student": 465
+  }
+}
