@@ -1,0 +1,39 @@
+name: Weekly disposable domain refresh (disposable-email-radar)
+on:
+  schedule:
+    - cron: '0 6 * * 1'   # Mondays 06:00 UTC
+  workflow_dispatch: {}    # manual trigger option
+
+defaults:
+  run:
+    working-directory: disposable-email-radar
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install dnspython
+      - run: python scripts/collect.py
+      - name: Verify domains (aborts and fails the job if DNS looks broken in this environment)
+        run: python scripts/verify.py
+      - name: Commit and push (only runs if verify.py succeeded above)
+        run: |
+          git config user.name "disposable-email-radar-bot"
+          git config user.email "actions@github.com"
+          git add data/disposable_domains.csv
+          git diff --cached --quiet || git commit -m "Weekly refresh: $(date +%d-%m-%Y)"
+          git push
+        working-directory: .
+
+  # Notes:
+  # - GitHub Actions stops the job on the first non-zero exit by default, so if
+  #   verify.py's plausibility guard trips, the commit step never runs — no bad
+  #   data gets written on a broken run.
+  # - Run this manually once via workflow_dispatch (Actions tab -> this workflow
+  #   -> "Run workflow") right after first pushing this file, to confirm DNS
+  #   resolution actually works in GitHub's runner environment before trusting
+  #   the Monday cron unattended.
