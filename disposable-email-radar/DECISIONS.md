@@ -1,0 +1,29 @@
+# Design Decisions
+
+A running log of the non-obvious calls made while building this, and why. Kept deliberately short per entry — the point is the reasoning, not the exposition.
+
+---
+
+**Aggregate existing open-source lists rather than discover domains from scratch.**
+Several actively maintained projects already track disposable domains (disposable-email-domains/disposable-email-domains, disposable/disposable-email-domains, groundcat/disposable-email-domain-list, eramitgupta/disposable-email). Re-solving "is this domain disposable" from zero every week would be redundant effort spent on the least differentiated part of the problem. The interesting work is the enrichment layer on top — format, country, duration — which none of the upstream lists track.
+
+**Status is two states, not three.**
+First draft included an `archived` tier for domains dead long enough that historical customer data might still reference them. Cut it: disposable-email providers relapse — domains lapse and get re-registered, services go down for maintenance and come back. A one-way `active → inactive → archived` transition would silently prevent a genuinely-revived domain from ever being marked active again, which is a worse failure mode than the problem it was solving. `verify.py` re-checks fresh every run with no memory of prior state beyond the current row.
+
+**Two separate date columns, not one.**
+`date_added` (set once, immutable) and `last_updated` (touched every run) answer different questions — "how long has this been tracked" versus "how fresh is this row" — and collapsing them into one field would lose one of the two answers.
+
+**Merge on domain across sources rather than keeping duplicate rows.**
+Most disposable domains appear in multiple upstream lists. One row per domain with a combined `source` field keeps the dataset queryable and avoids the ambiguity of "which of these five identical rows is authoritative."
+
+**Model routing by task, not one model for everything.**
+`enrich.py` (inferring format/country/duration for new domains) needs judgement and is worth Sonnet's capability, especially since it's writing data that persists. `collect.py`, `verify.py`, and `access_control.py` are mechanical read/diff/write operations with no interpretation required — Haiku is enough, and cheaper for a job that runs every week indefinitely. No step uses Fable 5; nothing in this pipeline needs that level of capability.
+
+**Fallback degrades gracefully instead of failing the whole run.**
+If Sonnet is unavailable for enrichment, the pipeline falls back to Haiku and flags the run as degraded in the commit message, rather than blocking the week's refresh entirely. A stale dataset with no signal about why is a worse outcome than an imperfect one with a clear flag on it.
+
+**Access control is manual-by-request, not a built API gateway.**
+Considered building a keyed API gateway (Option B in the spec) so third parties could query the dataset programmatically. Deliberately scoped this out for now: building multi-tenant auth infrastructure for an audience of zero actual requesters is effort spent on the least visible, least interesting part of the project, and once someone else's product depends on your weekly cron job, that's an ongoing liability you should only take on when someone actually asks. Manual repo-collaborator access covers the real need today; the gateway design is documented and ready to build if that changes.
+
+**MX record presence is a proxy signal, not a guarantee.**
+Confirms a domain *can* receive mail — it does not confirm the domain is actually being used as a disposable-email service today, or that a provider's site hasn't quietly changed its inbox duration or format. This is a known limitation of the verification method, not a solved problem (see README limitations section).
