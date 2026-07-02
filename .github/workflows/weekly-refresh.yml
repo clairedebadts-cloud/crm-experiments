@@ -24,7 +24,7 @@ jobs:
         run: |
           git config user.name "disposable-email-radar-bot"
           git config user.email "actions@github.com"
-          git add data/disposable_domains.csv
+          git add disposable-email-radar/data/disposable_domains.csv
           git diff --cached --quiet || git commit -m "Weekly refresh: $(date +%d-%m-%Y)"
           git push
         working-directory: .
