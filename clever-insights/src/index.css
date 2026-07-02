@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 228 20% 7%;
+    --foreground: 210 20% 92%;
+
+    --card: 228 18% 10%;
+    --card-foreground: 210 20% 92%;
+
+    --popover: 228 18% 10%;
+    --popover-foreground: 210 20% 92%;
+
+    --primary: 168 100% 39%;
+    --primary-foreground: 228 20% 7%;
+
+    --secondary: 228 14% 16%;
+    --secondary-foreground: 210 20% 85%;
+
+    --muted: 228 14% 14%;
+    --muted-foreground: 215 12% 50%;
+
+    --accent: 228 14% 18%;
+    --accent-foreground: 210 20% 92%;
+
+    --destructive: 348 90% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 228 20% 7%;
+
+    --healthy: 168 100% 39%;
+    --healthy-foreground: 228 20% 7%;
+
+    --critical: 348 90% 60%;
+    --critical-foreground: 210 40% 98%;
+
+    --border: 228 14% 18%;
+    --input: 228 14% 18%;
+    --ring: 168 100% 39%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 228 18% 9%;
+    --sidebar-foreground: 210 20% 85%;
+    --sidebar-primary: 168 100% 39%;
+    --sidebar-primary-foreground: 228 20% 7%;
+    --sidebar-accent: 228 14% 14%;
+    --sidebar-accent-foreground: 210 20% 92%;
+    --sidebar-border: 228 14% 18%;
+    --sidebar-ring: 168 100% 39%;
+
+    --font-mono: 'IBM Plex Mono', monospace;
+    --font-sans: 'DM Sans', sans-serif;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
