@@ -1,0 +1,15 @@
+# Virtual environments
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Data (never commit raw or generated data)
+data/raw/
+data/interim/
+data/processed/
+
