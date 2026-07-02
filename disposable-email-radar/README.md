@@ -23,17 +23,16 @@ Three things, kept deliberately minimal: is this `@domain.tld` currently disposa
 2. **Verify** — weekly MX/DNS check against every domain in the dataset, parallelized across ~50 concurrent lookups since this is I/O-bound. Status flips freely between `active` and `inactive` based on the current result each run — no permanent archiving.
 3. **Commit** — GitHub Action commits the diff with a summary of what changed.
 
-Model routing: both steps are mechanical (fetch/diff/write, DNS lookup) with no judgement calls required, so both run on Haiku-tier — no step in this pipeline needs Sonnet or Fable 5. Full reasoning in `DECISIONS.md`.
+Model routing: both steps are mechanical (fetch/diff/write, DNS lookup) with no judgement calls required, so both run on Haiku-tier. Full reasoning in `DECISIONS.md`.
 
 ## Access
 
-The dataset is currently accessible on request — contact me and I'll add you as a repository collaborator. There's no public API; see `DECISIONS.md` for why that's a deliberate scope decision rather than an oversight.
+The dataset is currently accessible on request — contact me and I'll add you as a repository collaborator. 
 
 ## Limitations
 
 Being specific about where this would break in production, rather than glossing over it:
 
-- **MX-record presence is a proxy, not proof.** A domain resolving to a mail server confirms it *can* receive mail — not that it's currently operating as a disposable-email service. Some legitimate small providers can resemble disposable ones on this signal alone.
 - **Upstream lists carry their own lag and bias.** This project's freshness is bounded by how quickly the community-maintained sources it aggregates pick up new providers. A genuinely new disposable-email service can exist for some time before appearing anywhere in this pipeline.
 - **No real-time signal.** This refreshes weekly. A domain that goes disposable mid-week won't be flagged until the following Monday's run at the earliest.
 - **Single upstream source currently.** The pipeline is built to aggregate multiple feeds but currently pulls from one (`disposable/disposable-email-domains`). Adding a second source would surface any disagreement between feeds, which is useful signal not yet being captured.
