@@ -1,229 +1,95 @@
-# B2B Lead Scoring: Uncovering a $300K Marketing Efficiency Opportunity
-
-**Project Focus:** Marketing Analytics | Lead Scoring | B2B Pipeline Optimization
-
+# Lead Scoring: Which Leads Are Worth Sales Time?
+ 
+**Marketing analytics · Lead scoring · Funnel and channel quality**
+ 
+A lead scoring model and funnel analysis on 9,240 leads from an online education company ([public Kaggle dataset](https://www.kaggle.com/datasets/ashydv/leads-dataset)). 38.5% of the leads became customers. The goal: score every lead, find out why so many never convert, and turn that into concrete actions for marketing, CRM and sales.
+ 
+![Conversion by lead segment](visualizations/11_lead_segments.png)
+ 
 ---
-
-## 🎯 Project Overview
-
-This project analyzes 9,000+ B2B leads to build a machine learning model that predicts conversion probability and uncovers marketing efficiency opportunities.
-
-**Key Achievement:** Identified a critical targeting problem where 42% of leads were low-quality "Cold" leads, costing approximately $92,500 annually in wasted sales effort. The analysis provides specific, actionable recommendations to reduce this waste and improve ROI.
-
-### What Makes This Analysis Different:
-- **Identified systemic problems** in marketing qualification (42% Cold leads)
-- **Diagnosed root causes** (Olark Chat 78.5% Cold, form completion gaps, broad targeting)
-- **Quantified business impact** ($300K-500K optimization opportunity)
-- **Provided actionable roadmap** with specific recommendations, owners, and timelines
-
+ 
+## 🔎 What the data shows
+ 
+**Where leads come from matters more than how many there are.**
+- Leads from referrals convert at 92%, while leads from the website chat (Olark) convert at only 25.5%, against 38.5% on average.
+- Google brings the most leads (2,868) and converts at 40%, so the issue there is targeting, not volume.
+**Completing the form is the strongest signal of intent.**
+- Leads with a complete form convert at 48.9%, against 13.8% for incomplete ones.
+**Time on the website beats the number of visits.**
+- Leads who convert spend more than twice as long on the site (about 12 minutes against 5.5), while visits and page views say much less.
+**Data quality hides part of the picture.**
+- 29% of leads miss key profile fields, and many "Select" values are form defaults rather than real answers. Telling those apart was the first cleaning step.
 ---
-
-## 🚨 Critical Discovery
-
-### The Problem
-**42% of all leads are "Cold"** (conversion score 0-25):
-- Only 25% of these leads convert
-- Waste ~1,850 sales hours annually
-- Cost approximately $92,500/year in sales effort
-- Prevent sales from focusing on high-probability leads
-
-### Root Causes Identified
-
-**1. Olark Chat - Poor Performance:**
-- 78.5% of leads from Olark are Cold
-- Average engagement: 63 seconds (immediate bounce)
-- Average visits: 0.3 (no return visits)
-- **Recommendation:** Shut down or complete redesign with qualification
-
-**2. Google Ads - Needs Optimization:**
-- 38% Cold leads (targeting too broad)
-- However: 41% overall conversion, strong engagement (11 mins, 4 visits)
-- **Recommendation:** Keyword optimization, landing page improvements
-
-**3. Form Completion Gap:**
-- Complete forms: 48.9% conversion
-- Incomplete forms: 13.8% conversion
-- **3.5x difference** - form completion is the strongest predictor
-- **Recommendation:** Make key fields mandatory, improve UX
-
+ 
+## 🎯 The scoring model
+ 
+XGBoost, compared against a Random Forest, on an 80/20 split:
+ 
+| Measure | Result |
+|---|---|
+| ROC-AUC | 0.925 |
+| Accuracy | 85.6% |
+| Precision | 83.6% |
+| Recall | 80.2% |
+ 
+Each lead gets a score from 0 to 100, grouped into four segments:
+ 
+| Segment | Score | Conversion |
+|---|---|---|
+| Very qualified | 75 to 100 | 85.1% |
+| Qualified | 50 to 75 | 59.8% |
+| Nurturing | 25 to 50 | 38.4% |
+| Cold | 0 to 25 | 24.9% |
+ 
+42% of leads (3,678) land in the Cold segment.
+ 
 ---
-
-## 📊 Model Performance
-
-### Lead Scoring Model
-- **Accuracy:** 90%+
-- **Precision:** 89% (10.7% false positive rate - acceptable for B2B)
-- **ROC-AUC:** 0.93
-- **Algorithm:** XGBoost (outperformed Random Forest)
-- **Status:** Production-ready with all artifacts saved
-
-### 4-Tier Segmentation
-- **Very Qualified (75-100):** 85.1% conversion
-- **Qualified (50-75):** 59.8% conversion
-- **Nurturing (25-50):** 38.4% conversion
-- **Cold (0-25):** 24.9% conversion
-
-**Result:** 3.4x difference between top and bottom segments.
-
+ 
+## 📬 What this means for CRM and marketing
+ 
+- **Route by segment.** Sales calls the very qualified and qualified leads first. Cold leads go to an automated nurture journey instead of a call.
+- **Build a nurture journey for the middle.** Nurturing leads convert at 38%: worth a sequence of emails and content, not worth chasing by phone.
+- **Fix the form before buying more traffic.** Making key fields mandatory and simplifying the form improves both conversion and data quality.
+- **Qualify chat leads.** Add qualifying questions to the website chat, or limit it, since most of its leads are cold.
+- **Tighten Google targeting.** Same budget, fewer cold leads.
+### Estimated impact
+ 
+This is an estimate, not a measured result. Assuming **30 minutes of sales time per cold lead** and **$50 per hour**, the 3,678 cold leads in the dataset represent about **1,840 sales hours, or roughly $92,000**. The dataset has no dates, so this is for the leads in the file, not per year.
+ 
 ---
-
-## 💰 Business Impact
-
-### Current State
-- 3,678 Cold leads (42% of all leads)
-- Sales actively contacting 1,327 Cold leads
-- ~1,850 hours wasted annually
-- ~$92,500 cost per year
-
-### After Implementation
-- Reduce Cold leads: 42% → 17%
-- Save ~1,000 sales hours annually
-- Reallocate to 1,999 Qualified+ leads
-- **Expected revenue impact: +20-30%**
-- **ROI: Immediate** (no additional marketing spend)
-
-### Implementation Roadmap
-1. **Week 1:** Model-based routing, Olark decision, Google quick wins
-2. **Month 1:** Form optimization, automated nurture campaigns
-3. **Month 2-3:** Comprehensive channel optimization
-4. **Ongoing:** Monitoring, retraining, continuous improvement
-
+ 
+## ⚠️ Limitations
+ 
+- **One company, one snapshot.** No dates, so no trends or seasonality.
+- **Some inputs are recorded after the first contact.** Sales tags and lead quality ratings are filled in by the sales team, so they make the model look stronger than it would be on a brand-new lead. For live scoring at signup, the model should be retrained without them.
+- **The cost figures rest on the assumptions above.** Swap in real sales costs before using them.
 ---
-
-## 🔍 Key Analytical Insights
-
-### Data Quality Analysis
-- Identified two types of missing data: expected (user didn't fill) vs. system bugs (NaN)
-- 29% of leads missing critical profile information
-- Recommended fixes: form validation, mandatory fields, API checks
-
-### Form Completion = Strongest Predictor
-- Complete forms: 48.9% conversion vs. Incomplete: 13.8%
-- Form completion itself signals purchase intent
-- Created `form_completion_score` feature (0-1 scale) as primary input
-
-### Sales Engagement Patterns
-- Simplified 26 Tag categories into 6 actionable `action_status` values
-- Discovered inconsistency: Some "Lost" leads still converting
-- Recommendation: Review status taxonomy with Sales Ops
-
-### Behavioral Signals
-- **Total Time Spent on Website** is the key engagement metric
-- TotalVisits and Page Views less predictive
-- Cold leads: 361s | Qualified leads: 659s (82% more time)
-
----
-
-## 🛠️ Technical Approach
-
-### Data Processing
-- **Dataset:** 9,000+ B2B leads, 37 features (demographics, behavioral, engagement)
-- **Cleaning:** Distinguished 'Select' placeholders from NaN errors, IQR outlier handling
-- **Feature Engineering:** 
-  - `form_completion_score` (most important)
-  - `action_status` (simplified from Tags)
-  - Data quality flags (`has_lead_profile`, etc.)
-  - Binary engagement indicators
-
-### Modeling
-- **Algorithms Tested:** Random Forest, XGBoost
-- **Winner:** XGBoost (slightly better ROC-AUC)
-- **Validation:** 80/20 stratified split
-- **Key Features:** form_completion_score, Total Time Spent, Lead Source, action_status
-
-### Analysis Stack
-- **Python:** Pandas, NumPy, Scikit-learn, XGBoost
-- **Visualization:** Matplotlib, Seaborn
-- **Notebooks:** Jupyter (4 comprehensive notebooks)
-
----
-
-## 📁 Project Structure
-
-```
-b2b-lead-scoring-analytics/
-├── notebooks/
-│   ├── 00_data_cleaning.ipynb           # Data quality assessment & cleaning
-│   ├── 01_data_exploration.ipynb        # EDA with business insights
-│   ├── 02_lead_scoring_model.ipynb      # Model building & targeting diagnosis
-│   └── 03_implementation_plan.ipynb     # Executive roadmap & recommendations
-├── data/
-│   ├── Leads.csv                        # Raw dataset
-│   ├── Leads_clean.csv                  # Cleaned dataset
-│   └── Leads_scored.csv                 # Scored with predictions
-├── visualizations/                      # 11 charts & analysis plots
-├── models/
-│   ├── lead_scoring_model.pkl           # Trained XGBoost model
-│   ├── scaler.pkl                       # Feature scaler
-│   ├── label_encoders.pkl               # Categorical encoders
-│   └── feature_names.pkl                # Feature list
-├── sql_queries/
-│   ├── lead_extraction.sql              # Sample CRM queries
-│   └── funnel_analysis.sql              # Pipeline analysis
-├── requirements.txt
-└── README.md
-```
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-```bash
-Python 3.12+
-Jupyter Notebook
-```
-
-### Installation
-
-1. **Clone the repository**
+ 
+## 🛠️ How it was built
+ 
+| Notebook | What it does |
+|---|---|
+| `00_data_cleaning.ipynb` | Data quality checks, separating form defaults from missing data, outliers |
+| `01_data_exploration.ipynb` | Conversion by channel, form completion, behaviour and sales status |
+| `02_lead_scoring_model.ipynb` | Random Forest and XGBoost, scoring and segmentation |
+| `03_implementation_plan.ipynb` | Recommendations and roll-out plan |
+ 
+Also in the repo: `sql_queries/` with sample CRM queries for lead extraction and funnel analysis, and `visualizations/` with the charts.
+ 
+**Stack:** Python, pandas, scikit-learn, XGBoost, Matplotlib, Seaborn, SQL
+ 
+### Run it
+ 
 ```bash
 git clone https://github.com/clairedebadts-cloud/b2b-lead-scoring-analytics.git
 cd b2b-lead-scoring-analytics
-```
-
-2. **Create virtual environment (recommended)**
-```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-```
-
-3. **Install dependencies**
-```bash
+python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-```
-
-4. **Download the dataset**
-- Go to [Kaggle Leads Dataset](https://www.kaggle.com/datasets/ashydv/leads-dataset)
-- Download `Leads.csv` and place in `data/` folder
-- Alternatively, use Kaggle API:
-```bash
-kaggle datasets download -d ashydv/leads-dataset -p ./data/
-unzip ./data/leads-dataset.zip -d ./data/
-```
-
-5. **Run the notebooks**
-```bash
 jupyter notebook
 ```
-Navigate to `notebooks/` and run in order: 00 → 01 → 02 → 03
-
----
-
-## 📈 Applications
-
-This analysis framework applies to:
-- B2B SaaS companies optimizing sales funnels
-- Marketing teams allocating budget based on channel quality
-- Sales operations prioritizing high-probability leads
-- CRM managers identifying data quality issues
-- Revenue operations forecasting pipeline health
-
----
-
-## 📝 License
-
-This project is open source and available under the MIT License.
+ 
+Then run the notebooks in order, from `00` to `03`.
+ 
 
 ---
 
